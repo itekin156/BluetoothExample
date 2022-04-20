@@ -1,6 +1,7 @@
 package com.example.bluetoothexample;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -11,12 +12,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Set;
@@ -31,6 +35,7 @@ public class ListActivity extends AppCompatActivity
     private ListView listAvailableDevices;
     private ArrayAdapter<String> adapterPaired , adapterAvailable;
     private Context context;
+
 
 
     @Override
@@ -48,6 +53,24 @@ public class ListActivity extends AppCompatActivity
         listAvailableDevices.setAdapter(adapterAvailable);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         Set<BluetoothDevice> paireDevices = bluetoothAdapter.getBondedDevices();
+
+        listAvailableDevices.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+            {
+                String info = ((TextView)view).getText().toString();
+                String address = info.substring(info.length()-17);
+
+                Intent intent= new Intent();
+                intent.putExtra("devicesAddress" , address);
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        });
+
+
+
         if(paireDevices != null &&  paireDevices.size()>0)
         for(BluetoothDevice device: paireDevices)
         {
@@ -113,6 +136,9 @@ public class ListActivity extends AppCompatActivity
             return super.onOptionsItemSelected(item);
         }
     }
+
+
+
 
     private void ScanDevices()
     {

@@ -1,6 +1,7 @@
 package com.example.bluetoothexample;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -13,6 +14,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -22,6 +25,41 @@ public class ChatActivity extends AppCompatActivity
     private static final int LOCATION_PERMISSION_REQUEST =101;
     private Context context;
     private BluetoothAdapter bluetoothAdapter;
+    private final static int SELECT_DEVICES = 102;
+    public static final int MESSAGE_STATE_CHANGED = 0;
+    public static final int MESSAGE_READ = 1;
+    public static final int MESSAGE_WRITE = 2;
+    public static final int MESSAGE_DEVICE_NAME = 3;
+    public static final int MESSAGE_TOAST = 4;
+
+    public static final String DEVICE_NAME = "deviceName";
+    public static final String TOAST = "TOAST";
+    private String connectedDevice;
+
+    Handler handler = new Handler(new Handler.Callback()
+    {
+        @Override
+        public boolean handleMessage(@NonNull Message message)
+        {
+            switch (message.what)
+            {
+                case MESSAGE_STATE_CHANGED:
+                    break;
+                case MESSAGE_READ:
+                    break;
+                case MESSAGE_WRITE:
+                    break;
+                case MESSAGE_DEVICE_NAME:
+                    connectedDevice = message.getData().getString(DEVICE_NAME);
+                    Toast.makeText(context, connectedDevice, Toast.LENGTH_SHORT).show();
+                    break;
+                case MESSAGE_TOAST:
+                    Toast.makeText(context, message.getData().getString(TOAST), Toast.LENGTH_SHORT).show();
+                    break;
+            }
+            return false;
+        }
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -65,7 +103,7 @@ public class ChatActivity extends AppCompatActivity
                 {
                     Intent intent = new Intent(bluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
                     intent.putExtra(bluetoothAdapter.EXTRA_DISCOVERABLE_DURATION,200);
-                    startActivity(intent);
+                    startActivityForResult(intent, SELECT_DEVICES);
                 }
                 return true;
             default:
@@ -84,8 +122,19 @@ public class ChatActivity extends AppCompatActivity
         }
         else{
             Intent in = new Intent( ChatActivity.this, ListActivity.class);
-            startActivity(in);
+            startActivityForResult(in , SELECT_DEVICES);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
+    {
+        if(requestCode == SELECT_DEVICES  && resultCode == RESULT_OK)
+        {
+            String address =  data.getStringExtra("deviceAddress");
+            Toast.makeText(context, "Address : "+ address, Toast.LENGTH_SHORT).show();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
