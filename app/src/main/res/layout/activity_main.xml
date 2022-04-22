@@ -8,6 +8,7 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+    //hello
     <TextView
         android:id="@+id/txtStatusBluetooth"
         android:layout_width="match_parent"
@@ -58,5 +59,12 @@
         android:text=" "
         android:textColor="@color/black" />
 
+    <Button
+        android:id="@+id/btnChat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="200dp"
+        android:layout_marginTop="100dp"
+        android:text="Lets Chat" />
 
 </LinearLayout>

@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnDiscover;
     private Button btnOf;
     private Button btnOn;
+    private Button btnChat;
     private ImageView imgBluetooth;
 
     @Override
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         txtPairedTv = findViewById(R.id.txtPairedTv);
         txtStatusBluetooth = findViewById(R.id.txtStatusBluetooth);
         imgBluetooth = findViewById(R.id.imgBluetooth);
+        btnChat = findViewById(R.id.btnChat);
 
         mBlueAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBlueAdapter == null) {
@@ -129,6 +131,16 @@ public class MainActivity extends AppCompatActivity {
                     showmsg("turn on bluetooth to get paired devices");
                 }
 
+            }
+        });
+
+        btnChat.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent in = new Intent( MainActivity.this, ChatActivity.class);
+                startActivity(in);
             }
         });
 
